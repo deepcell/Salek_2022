@@ -62,18 +62,6 @@ for (i in 2:nrow(cov_mb)) {
   cov_mb$loc[i] <- ifelse(cov_mb$sample_name[i] == cov_mb$sample_name[i-1], cov_mb$loc[i-1] + 1, 1)
 }
 
-# first show 1 Mb-level data for normalization samples (not necessary each time)
-#pdf("normalized_coverage_data.pdf")
-#with(cov_mb[cov_mb$sample_name %in% normalization_samples,], 
-#     plot(loc, scaled_cov/bias_median, pch = 19, col = alpha("darkblue",0.3), cex = 0,
-#          main = "normalized coverage data", ylim = c(0,3), xlab = "genomic position (Mb)", ylab = "scaled coverage"))
-#for (chrom_num in 1:23) {
-#  with(cov_mb[cov_mb$sample_name %in% normalization_samples & cov_mb$chrom_num == chrom_num,],
-#       points(loc, scaled_cov/bias_median, pch = 19, cex = 0.5, col = alpha(ifelse(chrom_num %% 2 == 0, "darkblue","darkred"),0.3)))
-#}
-#abline(h = seq(0,3,0.5), lty = "dotted", col = "grey")
-#dev.off()
-
 # now build all of the samples, one by one. Hope CNVs show up!
 cov_mb$scaled_scaled_cov <- with(cov_mb, scaled_cov / bias_median)
 
@@ -128,10 +116,10 @@ gc_stats$start <- 0
 gc_stats$end <- 100
 for (i in 1:nrow(gc_stats)) {
   if (i > 1 && gc_stats$sample_name[i] == gc_stats$sample_name[i-1]) {
-    gc_stats$start[i] <- (gc_stats$gc_percentile[i-1] + gc_stats$gc_percentile[i])/2 
+    gc_stats$start[i] <- (gc_stats$gc_percentile[i-1] + gc_stats$gc_percentile[i])/2
   }
   if (i < nrow(gc_stats) && gc_stats$sample_name[i] == gc_stats$sample_name[i+1]) {
-    gc_stats$end[i] <-  (gc_stats$gc_percentile[i+1] + gc_stats$gc_percentile[i])/2 
+    gc_stats$end[i] <-  (gc_stats$gc_percentile[i+1] + gc_stats$gc_percentile[i])/2
   }
 }
 
