@@ -62,7 +62,14 @@ def read_labels(run_ids):
     df = df[df['run_id'].isin(run_ids)] 
     return df 
 
+  
+def get_label(label, sample_type):
+  if sample_type == 'ADULT_BLOOD':
+      return 'WBC'
+  else:
+      return label
 
+    
 def process_metrics(df, thresh, pos_labels, neg_labels):
     
     def calculate_metrics(row, thresh, pos_labels, neg_labels):
@@ -108,7 +115,9 @@ thresholds = sorted(thresholds)
 run_ids = open(RUN_IDS_FILE).read().splitlines()
 predictions = read_predictions(run_ids)
 labels = read_labels(run_ids)
-metrics_df = pd.merge(predictions, labels, on=['cell_id'])
+metrics_df = pd.merge(predictions, labels, on=['cell_id'], how='left')
+metrics_df['label'] = [get_label(cell_id['label'], cell_id['sample_type']) for _, cell_id in metrics_df.iterrows()]
+metrics_df = metrics_df.dropna(subset=['label'])
 
 metrics = []
 for thresh in thresholds:
