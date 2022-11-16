@@ -15,7 +15,7 @@ for fqz in ${fqzfiles[@]}; do
     bamfile=$prefix".bam"
     if [[ ! -f $bamfile ]];
     then
-	bwa mem -M -t 10 ~/apps/reference_genomes/GRCh38/hg38.fullAnalysisSet.chroms/grch38chromsbwaidx $fqz $fqz2 \
+	bwa mem -M -t 10 GRCh38/hg38.fullAnalysisSet.chroms/grch38chromsbwaidx $fqz $fqz2 \
 	    | samtools view -S -b -q 60 \
 	    | samtools sort \
 	    > $bamfile
@@ -32,7 +32,7 @@ done
 # call variants only at SNP loci
 
 ls *.bam > all_bam_files
-bcftools mpileup -Ou -f ~/apps/reference_genomes/GRCh38/hg38.fullAnalysisSet.chroms/wg.fa \
+bcftools mpileup -Ou -f GRCh38/hg38.fullAnalysisSet.chroms/wg.fa \
     --min-MQ 60 --min-BQ 25 --max-depth 20000 \
     --threads 8 --skip-indels -b all_bam_files \
     --regions-file ~/code/scripts/snp.bed \
@@ -50,6 +50,41 @@ cat variants_joint_annotated.vcf | awk '$4 ~ /[ACGT]/ && $5 ~ /[ACGT\.]/' | awk 
     for (i = 10; i <= NF; i++){ad = $i; sub(/^.*:/, "", ad); n = split(ad, adj, ","); printf("\t%s", adj[1]); if(n > 1) {printf("\t%s", adj[2])} else{ printf("\t0")};}; printf("\n");}' \
       >> high_qual_snp_ad_deep.txt
 
+# snp calling within TP53 amplicons
+#bcftools mpileup -Ou -f GRCh38/hg38.fullAnalysisSet.chroms/wg.fa \
+#    --min-MQ 60 --min-BQ 25 --max-depth 20000 \
+#    --threads 8 --skip-indels -b all_bam_files \
+#    --regions-file ~/code/scripts/hglft_genome_380c3_349310.bed \
+#    --annotate FORMAT/AD,FORMAT/ADF,FORMAT/ADR,FORMAT/DP,FORMAT/SP,INFO/AD,INFO/ADF,INFO/ADR \
+#    | bcftools call -m -Ov -o "variants_joint_tp53.vcf" 
+
+# post-process TP53 snps ...
+#grep CHROM variants_joint_tp53.vcf | sed "s/#//" | awk 'BEGIN{OFS = "\t"; FS = "\t"}{printf("%s\t%s\t%s\t%s\t%s\t%s\t%s", $1, $2, $3, $4, $5, $6, $7); for (i = 10; i <= NF; i++){name=$i; sub(/_.*/,"",name); printf("\t%s_1\t%s_2", name#, name)}; printf("\n") }' > snp_ad_tp53.txt
+
+#grep -v "^#" variants_joint_tp53.vcf | awk '$5 == "A" || $5 == "C" || $5 == "G" || $5 == "T" || length($4) != length($5)' | awk 'BEGIN{OFS = "\t"}{printf("%s\t%s\t%s\t%s\t%s\t%s\t%s", $1, $2, $3, $4, $5, $6, $7); \
+#    for (i = 10; i <= NF; i++){ad = $i; sub(/^.*:/, "", ad); split(ad, adj, ","); printf("\t%s\t%s", adj[1], adj[2]);}; printf("\n");}' \
+#      >> snp_ad_tp53.txt
+
+# custom search for H522 indel in TP53
+#wt="AAGATGCTGAGGAGGGGCCAG"
+#wtrev=(`echo $wt | rev | tr "ACGT" "TGCA"`)
+#del="AAGATGCTGAGAGGGGCCAG"
+#delrev=(`echo $del | rev | tr "ACGT" "TGCA"`)
+
+#[[ -f "tp53_indel.csv" ]] && rm tp53_indel.csv;
+
+#fqzfiles=(*_R1_*.fastq.gz)
+#for fqz in ${fqzfiles[@]}; do
+#    prefix="${fqz/_R1_001.fastq.gz/}"
+#    fqz2=$prefix"_R2_001.fastq.gz"
+#    numwtfwd=(`gzcat $fqz  | grep -e $wt -e $wtrev | wc -l`)
+#    numwtrev=(`gzcat $fqz2 | grep -e $wt -e $wtrev | wc -l`)
+#    numdelfwd=(`gzcat $fqz  | grep -e $del -e $delrev | wc -l`)
+#    numdelrev=(`gzcat $fqz2 | grep -e $del -e $delrev | wc -l`)
+#    echo "$prefix,$numwtfwd,$numwtrev,$numdelfwd,$numdelrev" >> tp53_indel.csv
+#done
+
+
 # call variants only at SNP loci +/- 20 bases
 bcftools mpileup -Ou -f ~/apps/reference_genomes/GRCh38/hg38.fullAnalysisSet.chroms/wg.fa \
     --min-MQ 60 --min-BQ 25 --max-depth 20000 \
@@ -64,6 +99,7 @@ grep CHROM variants_joint_neighborhood.vcf | sed "s/#//" | awk 'BEGIN{OFS = "\t"
 grep -v "^#" variants_joint_neighborhood.vcf | awk '$5 == "A" || $5 == "C" || $5 == "G" || $5 == "T" ' | awk 'BEGIN{OFS = "\t"}{printf("%s\t%s\t%s\t%s\t%s\t%s\t%s", $1, $2, $3, $4, $5, $6, $7); \
     for (i = 10; i <= NF; i++){ad = $i; sub(/^.*:/, "", ad); split(ad, adj, ","); printf("\t%s\t%s", adj[1], adj[2]);}; printf("\n");}' \
       >> snp_ad_neighborhood.txt
+
 
 # summaries
 [[ -f "fastq_readcounts.csv" ]] && rm fastq_readcounts.csv;
@@ -90,9 +126,9 @@ paste -d',' fastq_readcounts.csv <(cut -d, -f2 all_good_alignments.csv) <(cut -d
     awk 'BEGIN{FS = ","; OFS = ","}{print $0, $4 + $5, $4/97, $5/8}' > summary_metrics.csv
 
 # postprocess with an R script (combining here)
-/usr/local/bin/Rscript ~/code/scripts/e2e_primary_analysis.R
+/usr/local/bin/Rscript ~/src/figure7ext_primary_analysis.R
 
-# copy files to NAS
+# copy files
 analysis_dir="analysis_files/"
 [ -f $analysis_dir ] || mkdir $analysis_dir
 cp summary_metrics_with_assay_noise.csv $analysis_dir

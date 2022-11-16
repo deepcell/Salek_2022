@@ -1,10 +1,27 @@
 Extended Figure 7
 =================
-Description
------------
-The following lists the scripts used to process the sample::
 
-    * e2etargetedsnp_2.sh - This script processes all the fastq.gz files in a directory through to::
+The data is available from s3://deepcell_public/Salek_2022_NatBiotechnol/.
+This directory contains the following files::
+
+    * README.rst
+    * src/figure7ext_primary_analysis.R
+    * src/figure7ext_targetedsnp_2.sh
+    * src/figure7ext_genotype_and_mixture_estimation.R
+    * data/fastq_files_list.txt
+
+Set the directory containing the fastq files listed under `fastq_files_list.txt` as working directory and process the data using the commands described in `e2etargetedsnp_2.sh`, followed by `e2d_primary_analysis.R`.
+Finally use the output, `snp_allele_fractions.csv`, to run `paper_custom_genotype_and_mixture_estimation.R` to create the final plot used for extended figure 7.
+
+..Note::
+    fastq files listed under fastq_files_list.txt are available upon request only.
+
+Code Description
+----------------
+The scripts listed here are also available to download from https://github.com/deepcell/Salek_2022_NatBiotechnol/.
+The following lists the scripts in `src` directory used to process the sample::
+
+    * figure7ext_targetedsnp_2.sh - This script processes the data::
 
         1. alignment to the reference genome using bwa mem
         2. indexes the bam files with samtools index
@@ -14,11 +31,16 @@ The following lists the scripts used to process the sample::
         6. Finds all variants within +/- 20 b of each variant and their read counts, as a proxy indicator of PCR + sequencing error
         7. Computes summary/aggregate metrics
 
-    * e2e_primary_analysis.R - This R script takes the results of e2etargetedsnp_2.sh, which are the summary measures + allele read counts, and performs the following::
+    * figure7ext_primary_analysis.R - This R script takes the results of e2etargetedsnp_2.sh, which are the summary measures + allele read counts, and performs the following::
 
         1. Sample QC
         2. Assay QC
         3. Allele fraction calculation
         4. Write out of data in long form with QCs joined
 
-    * paper_custom_genotype_and_mixture_estimation.R - This R script plots the figure used in ExtendedFigure7
+    * figure7ext_genotype_and_mixture_estimation.R - This R script plots the figure used in ExtendedFigure7
+
+Inputs
+------
+Fastq files listed in `fastq_files_list.txt` are the required inputs to `figure7ext_targetedsnp_2.sh`.
+These raw read files are available upon request.

@@ -2,12 +2,12 @@ library(scales)
 setwd("./")
 
 # read in DTC pre-sorted and sorted data
-cov_mb1 <- read.csv("7_DTC_1mb.csv", header = F, as.is = T)
+cov_mb1 <- read.csv("3_DTC_1mb.csv", header = F, as.is = T)
 names(cov_mb1) <- c("cov","chrom","pos_mb","sample_name")
 samples1 <- unique(cov_mb1$sample_name)
 
 # also read in 12878 data
-cov2_resolve <- read.csv("7_GM12878_1mb.csv", header = F, as.is = T)
+cov2_resolve <- read.csv("3_GM12878_1mb.csv", header = F, as.is = T)
 names(cov2_resolve) <- c("cov","chrom","pos_mb","sample_name")
 samples2_resolve <- unique(cov2_resolve$sample_name)
 
