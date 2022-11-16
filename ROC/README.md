@@ -1,6 +1,6 @@
 # Generate ROC Curve
 
-This repository contains the script used to ROC curves
+This repository contains the script used to generate ROC curves
 
 ## Contents
 
