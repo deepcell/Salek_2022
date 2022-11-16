@@ -1,5 +1,4 @@
 # This script is for the blood spike-ins analysis used in ExtendedFigure7
-
 # Custom genotype A549 (hypotriploid genome). To estimate G (genotypes), N (effective GEs), e (assay error) in a MLE sense
 
 setwd("./")

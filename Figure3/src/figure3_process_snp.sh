@@ -21,7 +21,7 @@ for  bam in ${bamfiles[@]}; do
 done
 
 
-# add readgroups and process the two panels separately
+# add readgroups
 swift_lung_bam_files=(*_L001.bam)
 for bamfile in ${swift_lung_bam_files[@]}; do
     prefix="${bamfile/.bam/}"
@@ -31,7 +31,6 @@ for bamfile in ${swift_lung_bam_files[@]}; do
     gatk AddOrReplaceReadGroups -I $bamfile --RGLB SwiftLung --RGPL Illumina --RGPU 3 --RGSM $samp -O $bam2
     samtools index $bam2
 done
-
 
 
 # generate allele counts
