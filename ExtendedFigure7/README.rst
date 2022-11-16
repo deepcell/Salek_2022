@@ -31,7 +31,7 @@ The following lists the scripts in `src` directory used to process the sample::
         6. Finds all variants within +/- 20 b of each variant and their read counts, as a proxy indicator of PCR + sequencing error
         7. Computes summary/aggregate metrics
 
-    * figure7ext_primary_analysis.R - This R script takes the results of e2etargetedsnp_2.sh, which are the summary measures + allele read counts, and performs the following::
+    * figure7ext_primary_analysis.R - This R script takes the results of figure7ext_targetedsnp_2.sh, which are the summary measures + allele read counts, and performs the following::
 
         1. Sample QC
         2. Assay QC
