@@ -10,8 +10,8 @@ This directory contains the following files::
     * src/figure7ext_genotype_and_mixture_estimation.R
     * data/fastq_files_list.txt
 
-Set the directory containing the fastq files listed under `fastq_files_list.txt` as working directory and process the data using the commands described in `e2etargetedsnp_2.sh`, followed by `e2d_primary_analysis.R`.
-Finally use the output, `snp_allele_fractions.csv`, to run `paper_custom_genotype_and_mixture_estimation.R` to create the final plot used for extended figure 7.
+Set the directory containing the fastq files listed under `fastq_files_list.txt` as working directory and process the data using the commands described in `figure7ext_targetedsnp_2.sh`, followed by `figure7ext_primary_analysis.R`.
+Finally use the output, `snp_allele_fractions.csv`, to run `figure7ext_genotype_and_mixture_estimation.R` to create the final plot used for extended figure 7.
 
 ..Note::
     fastq files listed under fastq_files_list.txt are available upon request only.
