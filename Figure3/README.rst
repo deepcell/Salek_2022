@@ -1,7 +1,7 @@
 Figure 3
 ========
 
-The data is available from s3://deepcell_public/Salek_2022_NatBiotechnol/.
+The data is available from s3://deepcell-public/Salek_2022/.
 This directory contains the following files::
 
     * README.rst
@@ -25,7 +25,7 @@ This directory contains the following files::
 
 Description
 -----------
-The scripts listed here are also available to download from https://github.com/deepcell/Salek_2022_NatBiotechnol/.
+The scripts listed here are also available to download from https://github.com/deepcell/Salek_2022/.
 The following lists the scripts in `src` directory used to process and analyze the molecular data depicted in Figure 3::
 
     * figure3_process_snp.sh for figure 3d - This script processes the data for mutation analysis::
