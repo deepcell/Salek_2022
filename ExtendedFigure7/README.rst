@@ -1,7 +1,7 @@
 Extended Figure 7
 =================
 
-The data is available from s3://deepcell_public/Salek_2022_NatBiotechnol/.
+The data is available from s3://deepcell-public/Salek_2022/.
 This directory contains the following files::
 
     * README.rst
